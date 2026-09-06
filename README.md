@@ -1,48 +1,20 @@
 # ⚡ Hi, I'm Darshan! 
+🎓 AI & ML Engineering Student | 🤖 Artificial Intelligence & Machine Learning | 💻 Python & DSA | 🚀 Exploring AI, Data Science & Generative AI | Building Skills for the Future | 📳 Game Programmer
 
-> **AI & ML Enthusiast 🐍 | Python Learner 💻 | Developer 📊**  
-> *Exploring Data & Machine Learning. Learning today, building tomorrow. 🚀*
-
----
-
-### 🌐 Connect With Me
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/darshan)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:dachhud123@gmail.com)
-
----
-
-### 🛠️ Tech Stack & Skills
-
-| Category | Technologies |
-| :--- | :--- |
-| **Languages** | `Python` `C` `C++` |
-| **Domains** | `Artificial Intelligence` `Machine Learning` `Software Development` |
-
----
-
-### 📊 GitHub Analytics
-
-<div align="center">
-
-  <img height="160" src="https://github-readme-stats.vercel.app/api?username=Darshan-tech-ai&show_icons=true&theme=tokyonight&hide_border=true" alt="Darshan's GitHub Stats" />
-  <img height="160" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Darshan-tech-ai&layout=compact&theme=tokyonight&hide_border=true" alt="Most Used Languages" />
-
-</div>
-
-<br/>
-
-<div align="center">
-
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Darshan-tech-ai&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
+[![GitHub](https://img.shields.io/badge/GitHub-Darshan--tech--ai-181717?style=for-the-badge&logo=github)](https://github.com/Darshan-tech-ai)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Darshan-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/darshan)
 
 </div>
 
 ---
 
-<div align="center">
+## 🧑‍💻 Who Am I?
 
-👀 **Profile Views**  
-![Profile Views](https://komarev.com/ghpvc/?username=Darshan-tech-ai&color=blueviolet&style=flat-square)
-
-</div>
+```text
+🎓 AI & ML Engineering Student
+        │
+        ├── 🐍 Learning Python
+        ├── 🤖 Exploring Artificial Intelligence
+        ├── 📊 Exploring Data & Machine Learning
+        ├── 💻 Developing Programming Skills
+        └── 🎮 Exploring Game Development
