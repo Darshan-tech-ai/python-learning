@@ -1,8 +1,8 @@
 <div align="center">
 
-# Darshan 
+# 😃 Darshan 😃
 
-### Artificial Intelligence & Machine Learning Engineering
+### 📊 Artificial Intelligence & Machine Learning Student
 
 <p>
   <img src="https://img.shields.io/badge/🤖%20AI%20%26%20ML-Student-8A2BE2?style=flat-square">
@@ -19,53 +19,57 @@
 
 ---
 
-## About
+## 👉 About Me
 
-Artificial Intelligence & Machine Learning Engineering student passionate about
-programming, artificial intelligence, machine learning and building real-world
-technology projects. Currently improving my programming and problem-solving
+💻 Artificial Intelligence & ⚙️ Machine Learning Engineering student, 0️⃣1️⃣ passionate about
+programming, 📊 artificial intelligence, 🦾machine learning and building real-world
+technology projects. 🚀 Currently improving my programming and problem-solving
 skills while exploring the world of AI & ML.
 
-✧ **Education** &nbsp;&nbsp; Artificial Intelligence & Machine Learning Engineering  
-⌘ **Programming** &nbsp;&nbsp; C, Python  
-◉ **Learning** &nbsp;&nbsp; Data Structures, Python, AI & Machine Learning  
-⌁ **Focus** &nbsp;&nbsp; Artificial Intelligence & Machine Learning  also some knowledge of game development 
+✧ **📑 Education** &nbsp;&nbsp; 💻 Artificial Intelligence & 🤖 Machine Learning Engineering  
+⌘ **📝 Programming** &nbsp;&nbsp; C,C++, Python  
+◉ **👉 Learning** &nbsp;&nbsp; 📊 Data Structures, 🐍 Python, 💻AI & ⚙️Machine Learning , 🎮 Game Programming 
+⌁ **🧐 Focus** &nbsp;&nbsp; 💻Artificial Intelligence & ⚙️Machine Learning  also some knowledge of 📳 game development 
 
-✦ **Fun fact:** I enjoy learning new technologies and turning ideas into projects.
+✦ **😋 Fun fact:** 😁 I enjoy learning new technologies and turning ideas into projects.
 
 ---
 
-# Stack
+# Stack ⚙️
 
-### Languages
+### 📝 Languages
 
 <p>
-<img src="https://skillicons.dev/icons?i=c,python" height="55"/>
+<img src="https://skillicons.dev/icons?i=c,C++,python" height="55"/>
 </p>
 
-### AI / Machine Learning
+### 🚀 AI / ⚙️ Machine Learning
 
 <p>
-<img src="https://skillicons.dev/icons?i=python" height="55"/>
+<img src="https://skillicons.dev/icons?i=python,NumPy,Pandas,Scikit-learn,PyTorch,Google Colab" height="55"/>
 </p>
 
-### Development Tools
+### 🦾 Development Tools
 
 <p>
-<img src="https://skillicons.dev/icons?i=git,github,vscode" height="55"/>
+<img src="https://skillicons.dev/icons?i=git,github,vscode,MongoDB,Git, Docker, Postman , Android studio " height="55"/>
 </p>
 
 ---
 
 # Languages
 
+🇮🇳 **Kannada** &nbsp; `Native`
+
+🇮🇳 **Hindi** &nbsp; `Native`
+
 🇬🇧 **English** &nbsp; `Intermediate`
 
-🇮🇳 **Hindi,Kannada** &nbsp; `Native`
+
 
 ---
 
-# GitHub Stats
+# 🧐 GitHub Stats
 
 <div align="center">
 
@@ -81,7 +85,7 @@ skills while exploring the world of AI & ML.
 
 ---
 
-# Connect With Me
+# Connect Me with 👇
 
 <div align="center">
 
@@ -99,8 +103,8 @@ skills while exploring the world of AI & ML.
 
 <div align="center">
 
-### 🚀 Learning • Building • Improving
+### 🚀 Learning • 🦾 Building • 📈 Improving
 
-*"Turning curiosity into code and ideas into reality."*
+*"Turning curiosity into code and ideas into reality...!🌐"*
 
 </div>
