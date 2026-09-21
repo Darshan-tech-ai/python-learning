@@ -1,4 +1,4 @@
-<div align="center">
+div align="center">
 
 # 😃 Darshan 😃
 
@@ -108,4 +108,4 @@ skills while exploring the world of AI & ML.
 
 *"Turning curiosity into code and ideas into reality...!🌐"*
 
-</div>
+</div
