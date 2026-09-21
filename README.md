@@ -43,6 +43,7 @@ skills while exploring the world of AI & ML.
 <img src="https://skillicons.dev/icons?i=c,C++,python" height="55"/>
 </p>
 
+### 🤖 AI & Machine Learning Tools
 
 <p>
 <img src="https://skillicons.dev/icons?i=python,NumPy,Pandas,Scikit-learn,PyTorch,Google Colab" height="55"/>
