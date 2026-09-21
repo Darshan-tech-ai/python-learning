@@ -2,12 +2,12 @@
 
 # 😃 Darshan 😃
 
-### 📊 Artificial Intelligence & Machine Learning Student
+### 📊 Artificial Intelligence & Machine Learning 
 
 <p>
   <img src="https://img.shields.io/badge/🤖%20AI%20%26%20ML-Student-8A2BE2?style=flat-square">
   <img src="https://img.shields.io/badge/💻%20Programming-C%20%7C%20Python-blue?style=flat-square">
-  <img src="https://img.shields.io/badge/🎓%20Engineering-AIML-success?style=flat-square">
+  <img src="https://img.shields.io/badge/🎓%20Engineering-BE(AIML)-success?style=flat-square">
 </p>
 
 <p>
@@ -43,7 +43,6 @@ skills while exploring the world of AI & ML.
 <img src="https://skillicons.dev/icons?i=c,C++,python" height="55"/>
 </p>
 
-### 🚀 AI / ⚙️ Machine Learning
 
 <p>
 <img src="https://skillicons.dev/icons?i=python,NumPy,Pandas,Scikit-learn,PyTorch,Google Colab" height="55"/>
@@ -52,8 +51,9 @@ skills while exploring the world of AI & ML.
 ### 🦾 Development Tools
 
 <p>
-<img src="https://skillicons.dev/icons?i=git,github,vscode,MongoDB,Git, Docker, Postman , Android studio " height="55"/>
+<img src="https://skillicons.dev/icons?i=github,vscode,MongoDB,Git, Docker, Postman , Android studio " height="55"/>
 </p>
+
 
 ---
 
@@ -73,13 +73,13 @@ skills while exploring the world of AI & ML.
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=Darshan-tech-ai.&show_icons=true&theme=tokyonight&hide_border=false&count_private=true" height="180"/>
+<img src="https://github-readme-stats.vercel.app/api?username=Darshan-tech-ai. &show_icons=true&theme=tokyonight&hide_border=false&count_private=true" height="180"/>
 
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Darshan-tech-ai.layout=compact&theme=tokyonight&hide_border=false" height="180"/>
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Darshan-tech-ai. layout=compact&theme=tokyonight&hide_border=false" height="180"/>
 
 <br><br>
 
-<img src="https://streak-stats.demolab.com?user=Darshan-tech-ai.&theme=tokyonight&hide_border=false" height="180"/>
+<img src="https://streak-stats.demolab.com?user=Darshan-tech-ai. &theme=tokyonight&hide_border=false" height="180"/>
 
 </div>
 
