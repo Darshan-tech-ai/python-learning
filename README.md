@@ -43,19 +43,20 @@ skills while exploring the world of AI & ML.
 ### 📝 Languages
 
 <p>
-  <img src="https://skillicons.dev/icons?i=c,cpp,python" height="55"/>
+  <img src="https://skillicons.dev/icons?i=c,cpp,python" height="55"/img>
 </p>
 
 ### 🤖 AI & Machine Learning Tools
 
 <p>
-  <img src="https://skillicons.dev/icons?i=numpy,pandas,sklearn,pytorch,tensorflow,jupyter, Google colab" height="55"/>
+  <img src="https://skillicons.dev/icons
+    i=numpy,pandas,sklearn,pytorch,tensorflow,jupyter, colab" height="55"/img>
 </p>
 
 ### 🦾 Development Tools
 
 <p>
-  <img src="https://skillicons.dev/icons?i=git,github,vscode,docker,mongodb,postman,androidstudio" height="55"/>
+  <img src="https://skillicons.dev/icons?i=git,github,vscode,docker,mongodb,postman,androidstudio" height="55"/img>
 </p>
 
 ---
