@@ -38,7 +38,7 @@ skills while exploring the world of AI & ML.
 
 ---
 
-# Stack ⚙️
+#  Tech Stack ⚙️
 
 ### 📝 Languages
 
