@@ -49,8 +49,7 @@ skills while exploring the world of AI & ML.
 ### 🤖 AI & Machine Learning Tools
 
 <p>
-  <img src="https://skillicons.dev/icons?i=numpy,
-pandas,sklearn,pytorch,tensorflow,jupyter,colab" height="55"/img>
+  <img src="https://skillicons.dev/icons?i=numpy,pandas,sklearn,pytorch,tensorflow,jupyter,colab" height="55"/>
 </p>
 
 ### 🦾 Development Tools
