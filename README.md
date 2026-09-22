@@ -48,8 +48,23 @@ skills while exploring the world of AI & ML.
 
 ### 🤖 AI & Machine Learning Tools
 
-<p>
-  <img src="https://skillicons.dev/icons?i=numpy,pandas,sklearn,pytorch,tensorflow,jupyter,colab" height="55"/>
+<p align="left">
+
+<!-- Scikit-learn, PyTorch, TensorFlow -->
+<img src="https://skillicons.dev/icons?i=sklearn,pytorch,tensorflow" height="55"/>
+
+<!-- NumPy -->
+<img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" height="55"/>
+
+<!-- Pandas -->
+<img src="https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" height="55"/>
+
+<!-- Jupyter -->
+<img src="https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white" height="55"/>
+
+<!-- Google Colab -->
+<img src="https://img.shields.io/badge/Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" height="55"/>
+
 </p>
 
 ### 🦾 Development Tools
