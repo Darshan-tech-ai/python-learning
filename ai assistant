@@ -1,0 +1,621 @@
+#!/usr/bin/env node
+
+/**
+ * Appu - Darshan's Personal Daily Routine & Study Assistant
+ */
+
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const readline = require('readline');
+
+const SCHEDULE_PATH = path.join(__dirname, 'schedule.json');
+const HISTORY_PATH = path.join(__dirname, 'study_history.json');
+
+function loadSchedule() {
+  try {
+    const data = fs.readFileSync(SCHEDULE_PATH, 'utf-8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Error loading schedule:', err.message);
+    return [];
+  }
+}
+
+function parseTimeToMinutes(timeStr) {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+function getNowMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function formatMinutes(mins) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const ampm = h >= 12 && h < 24 ? 'PM' : 'AM';
+  const displayH = h % 12 === 0 ? 12 : h % 12;
+  const displayM = m < 10 ? '0' + m : m;
+  return `${displayH}:${displayM} ${ampm}`;
+}
+
+function getScheduleStatus() {
+  const schedule = loadSchedule();
+  const nowMins = getNowMinutes();
+  const now = new Date();
+
+  let currentItem = null;
+  let nextItem = null;
+
+  for (let i = 0; i < schedule.length; i++) {
+    const item = schedule[i];
+    const startM = parseTimeToMinutes(item.start);
+    const endM = parseTimeToMinutes(item.end);
+
+    if (nowMins >= startM && nowMins < endM) {
+      currentItem = item;
+      nextItem = schedule[i + 1] || schedule[0];
+      break;
+    }
+  }
+
+  if (!currentItem) {
+    // Check if before first event or after last event
+    for (let i = 0; i < schedule.length; i++) {
+      const item = schedule[i];
+      const startM = parseTimeToMinutes(item.start);
+      if (nowMins < startM) {
+        nextItem = item;
+        break;
+      }
+    }
+    if (!nextItem && schedule.length > 0) {
+      nextItem = schedule[0]; // wraps to next day
+    }
+  }
+
+  // Calculate critical transit countdowns
+  // 7:20 AM: Leave for bus stop (440 mins)
+  // 7:28 AM: Catch bus (448 mins)
+  const leaveStopMins = 7 * 60 + 20;
+  const catchBusMins = 7 * 60 + 28;
+
+  const minsUntilLeave = leaveStopMins - nowMins;
+  const minsUntilBus = catchBusMins - nowMins;
+
+  return {
+    currentTimeFormatted: formatMinutes(nowMins),
+    currentTimeISO: now.toISOString(),
+    nowMins,
+    currentItem,
+    nextItem,
+    minsUntilLeave,
+    minsUntilBus
+  };
+}
+
+function printStatus() {
+  const status = getScheduleStatus();
+  console.log('\n======================================================');
+  console.log('           🐘 APPU: DARSHAN\'S DAILY ASSISTANT        ');
+  console.log('======================================================');
+  console.log(`🕒 Current Time: ${status.currentTimeFormatted}`);
+
+  if (status.minsUntilLeave > 0 && status.minsUntilLeave <= 60) {
+    console.log(`\n🚨 TRANSIT ALERT:`);
+    console.log(`   ⏳ Walk to Bus Stop in: ${status.minsUntilLeave} minutes (at 7:20 AM)`);
+    console.log(`   🚌 Bus Arrives in:      ${status.minsUntilBus} minutes (at 7:28 AM SHARP)`);
+  } else if (status.minsUntilBus >= 0 && status.minsUntilBus <= 8) {
+    console.log(`\n🚨 CRITICAL ALERT: BUS IS COMING AT 7:28 AM! (${status.minsUntilBus}m left)`);
+  }
+
+  if (status.currentItem) {
+    const endM = parseTimeToMinutes(status.currentItem.end);
+    const remaining = endM - status.nowMins;
+    console.log(`\n📍 CURRENT TASK:`);
+    console.log(`   Task:      ${status.currentItem.title} [${status.currentItem.type.toUpperCase()}]`);
+    console.log(`   Duration:  ${status.currentItem.start} - ${status.currentItem.end} (${remaining}m remaining)`);
+    console.log(`   Guidance:  ${status.currentItem.description}`);
+  } else {
+    console.log(`\n📍 CURRENT TASK: Off-schedule free window`);
+  }
+
+  if (status.nextItem) {
+    const startM = parseTimeToMinutes(status.nextItem.start);
+    let until = startM - status.nowMins;
+    if (until < 0) until += 24 * 60;
+    console.log(`\n🔜 NEXT UP:`);
+    console.log(`   Task:      ${status.nextItem.title}`);
+    console.log(`   Starts At: ${status.nextItem.start} (in ${until} minutes)`);
+    console.log(`   Details:   ${status.nextItem.description}`);
+  }
+
+  console.log('\n💡 Study Sessions Today:');
+  console.log('   - 07:00 PM - 08:00 PM: Evening Study Session 1 (Recall & Concept Drill)');
+  console.log('   - 09:30 PM - 12:00 AM: Night Deep Work Session (No distractions)');
+  console.log('======================================================\n');
+}
+
+function watchMode() {
+  console.clear();
+  console.log('🐘 Appu Watch Monitor Started... (Press Ctrl+C to stop)');
+  let lastNotifiedMins = -1;
+
+  setInterval(() => {
+    const now = new Date();
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+
+    if (nowMins !== lastNotifiedMins) {
+      lastNotifiedMins = nowMins;
+      console.clear();
+      printStatus();
+
+      // Audio beeps for critical moments
+      if (nowMins === 7 * 60 + 20) {
+        process.stdout.write('\x07\x07\x07');
+        console.log('\n⚠️🔔 7:20 AM ALERT: Darshan, LEAVE FOR THE BUS STOP RIGHT NOW!');
+      } else if (nowMins === 7 * 60 + 27 || nowMins === 7 * 60 + 28) {
+        process.stdout.write('\x07\x07\x07');
+        console.log('\n🚌🔔 7:28 AM ALERT: THE BUS IS HERE! GET ON BOARD!');
+      } else if (nowMins === 19 * 60) {
+        process.stdout.write('\x07');
+        console.log('\n📚🔔 7:00 PM ALERT: Evening Study Session 1 begins!');
+      } else if (nowMins === 21 * 60 + 30) {
+        process.stdout.write('\x07');
+        console.log('\n🧠🔔 9:30 PM ALERT: Night Deep Work Session begins! Phone on silent.');
+      }
+    }
+  }, 1000);
+}
+
+function studyMode(subjectArg) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const subject = subjectArg || 'General Study / Problem Solving';
+  console.log('\n======================================================');
+  console.log(`🧠 APPU STUDY COACH: ${subject.toUpperCase()}`);
+  console.log('======================================================');
+  console.log('Target: Lock in 100% focus. Eliminate all notifications.\n');
+
+  const startTime = new Date();
+  rl.question('What specific subtopic or goal are you tackling in this session? ', (goal) => {
+    console.log(`\n✅ Session started at ${startTime.toLocaleTimeString()}!`);
+    console.log(`🎯 Target Goal: ${goal}`);
+    console.log('Type "done" when you finish to log this session, or "quiz" to test yourself.\n');
+
+    rl.on('line', (line) => {
+      const input = line.trim().toLowerCase();
+      if (input === 'done' || input === 'finish' || input === 'exit') {
+        const endTime = new Date();
+        const durationMins = Math.round((endTime - startTime) / (1000 * 60));
+        
+        let history = [];
+        try {
+          if (fs.existsSync(HISTORY_PATH)) {
+            history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'));
+          }
+        } catch (e) {}
+
+        const record = {
+          date: new Date().toLocaleDateString(),
+          startTime: startTime.toLocaleTimeString(),
+          endTime: endTime.toLocaleTimeString(),
+          durationMins,
+          subject,
+          goal
+        };
+        history.push(record);
+        fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
+
+        console.log(`\n🎉 Great work, Darshan! You completed ${durationMins} minutes of study.`);
+        console.log(`Logged to ${HISTORY_PATH}`);
+        rl.close();
+        process.exit(0);
+      } else if (input === 'quiz') {
+        quizMode(subject);
+      } else {
+        console.log(`Appu is watching: Keep grinding! (${Math.round((new Date() - startTime) / 60000)} mins passed)`);
+      }
+    });
+  });
+}
+
+const QUIZZES = {
+  aiml: [
+    {
+      q: "What is the primary role of Gradient Descent in Machine Learning?",
+      options: [
+        "A) To clean and normalize training data",
+        "B) To iteratively minimize the loss function by adjusting parameters",
+        "C) To evaluate test set accuracy",
+        "D) To split datasets into train and validation sets"
+      ],
+      ans: "B",
+      exp: "Gradient descent computes the gradient of the loss function with respect to weights and steps in the opposite direction to find the minimum."
+    },
+    {
+      q: "Which technique directly helps prevent overfitting in a Deep Neural Network?",
+      options: [
+        "A) Dropout and L2 Regularization",
+        "B) Increasing the number of epochs to 10000",
+        "C) Removing the validation set",
+        "D) Setting the learning rate to 10.0"
+      ],
+      ans: "A",
+      exp: "Dropout randomly deactivates neurons during training, and L2 regularization penalizes large weights, preventing co-adaptation and overfitting."
+    },
+    {
+      q: "What mechanism allows Transformers to process entire sequences in parallel rather than sequentially?",
+      options: [
+        "A) Recurrent hidden states",
+        "B) Multi-Head Self-Attention",
+        "C) Convolutional max-pooling",
+        "D) Backpropagation through time"
+      ],
+      ans: "B",
+      exp: "Self-attention computes pairwise relation scores between all tokens concurrently using Query, Key, and Value matrices."
+    }
+  ],
+  dsa: [
+    {
+      q: "What is the average time complexity of searching an element in a balanced Binary Search Tree (AVL / Red-Black)?",
+      options: [
+        "A) O(1)",
+        "B) O(log n)",
+        "C) O(n)",
+        "D) O(n log n)"
+      ],
+      ans: "B",
+      exp: "Because the tree remains height-balanced (height = log n), each comparison eliminates half the remaining search space."
+    },
+    {
+      q: "Which data structure is fundamentally used in Breadth-First Search (BFS) graph traversal?",
+      options: [
+        "A) Stack",
+        "B) Queue",
+        "C) Priority Queue",
+        "D) Min-Heap"
+      ],
+      ans: "B",
+      exp: "BFS processes nodes level by level in First-In-First-Out (FIFO) order, which is implemented via a Queue."
+    }
+  ]
+};
+
+function quizMode(topic) {
+  const key = (topic || '').toLowerCase().includes('dsa') || (topic || '').toLowerCase().includes('code') ? 'dsa' : 'aiml';
+  const questions = QUIZZES[key] || QUIZZES.aiml;
+  const item = questions[Math.floor(Math.random() * questions.length)];
+
+  console.log('\n------------------------------------------------------');
+  console.log(`📝 APPU ACTIVE RECALL QUIZ [${key.toUpperCase()}]:`);
+  console.log(`Question: ${item.q}\n`);
+  item.options.forEach(opt => console.log(`   ${opt}`));
+  console.log('\nCorrect Answer: ' + item.ans);
+  console.log('Explanation:    ' + item.exp);
+  console.log('------------------------------------------------------\n');
+}
+
+function serveWebDashboard(port = 3333) {
+  const publicDir = path.join(__dirname, 'public');
+  const server = http.createServer((req, res) => {
+    if (req.url === '/' || req.url === '/index.html') {
+      const htmlPath = path.join(publicDir, 'index.html');
+      if (fs.existsSync(htmlPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        fs.createReadStream(htmlPath).pipe(res);
+        return;
+      }
+    }
+
+    if (req.url === '/api/status') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(getScheduleStatus()));
+      return;
+    }
+
+    if (req.url === '/api/schedule') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(loadSchedule()));
+      return;
+    }
+
+    if (req.url === '/api/quiz') {
+      const all = [...QUIZZES.aiml, ...QUIZZES.dsa];
+      const randomQ = all[Math.floor(Math.random() * all.length)];
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(randomQ));
+      return;
+    }
+
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not Found');
+  });
+
+  server.listen(port, () => {
+    console.log('\n======================================================');
+    console.log(`🐘 APPU LIVE DASHBOARD RUNNING AT:`);
+    console.log(`👉 http://localhost:${port}`);
+    console.log('======================================================\n');
+  });
+}
+
+// Command dispatcher
+const cmd = (process.argv[2] || '').toLowerCase();
+const arg = process.argv[3];
+
+switch (cmd) {
+  case 'watch':
+    watchMode();
+    break;
+  case 'study':
+    studyMode(arg);
+    break;
+  case 'quiz':
+    quizMode(arg);
+    break;
+  case 'serve':
+    serveWebDashboard(arg ? parseInt(arg, 10) : 3333);
+    break;
+  case 'status':
+  default:
+    printStatus();
+    break;
+}
+
+
+# Appu AI - Darshan's Personal Assistant Rule
+
+You are **Appu**, Darshan's personal daily routine, transit tracker, and academic study assistant.
+
+## Schedule Blueprint:
+- 06:30 AM: Wake up alert
+- 07:00 AM – 07:10 AM: Breakfast (tiffin time)
+- 07:20 AM: Leave for bus stop (critical milestone)
+- 07:28 AM: Catch the bus (critical alert!)
+- 08:45 AM: Reach college campus
+- 09:00 AM – 01:20 PM: Morning classes
+- 01:20 PM – 01:45 PM: Post-class break / phone window
+- 01:45 PM onwards: Afternoon classes & labs
+- 06:30 PM: Arrive home & unwind
+- 07:00 PM – 08:00 PM: Evening Study Session 1 (Recall, concepts, rapid quiz)
+- 08:10 PM – 08:40 PM: Dinner break
+- 09:30 PM – 12:00 AM: Night Deep Work Session (Distraction-free)
+
+## Persona & Directives:
+1. Always address him as Darshan in a disciplined, encouraging, and friendly tone.
+2. Check the current time whenever answering and give him immediate transit countdowns (especially 7:20 AM and 7:28 AM).
+3. Actively quiz him and coach him during his study blocks (7:00 PM and 9:30 PM) on AIML, DSA, coding, and mathematics.
+
+{
+  "name": "appu-assistant",
+  "version": "1.0.0",
+  "description": "Darshan's personal AI agent for daily routine, transit tracking, and study coaching",
+  "main": "appu.js",
+  "scripts": {
+    "start": "node appu.js status",
+    "watch": "node appu.js watch",
+    "serve": "node appu.js serve",
+    "study": "node appu.js study",
+    "quiz": "node appu.js quiz"
+  },
+  "keywords": ["assistant", "schedule", "study-coach", "transit-tracker"],
+  "author": "Darshan & Appu",
+  "license": "MIT"
+}
+
+
+[
+  {
+    "id": "wake_up",
+    "title": "Wake Up Alert",
+    "start": "06:30",
+    "end": "07:00",
+    "type": "routine",
+    "critical": false,
+    "description": "Wake up, hydrate, freshen up, and get ready for the day."
+  },
+  {
+    "id": "breakfast",
+    "title": "Breakfast (Tiffin Time)",
+    "start": "07:00",
+    "end": "07:10",
+    "type": "routine",
+    "critical": false,
+    "description": "Have your morning breakfast/tiffin to stay energized."
+  },
+  {
+    "id": "prep_transit",
+    "title": "Prep & Bag Check",
+    "start": "07:10",
+    "end": "07:20",
+    "type": "routine",
+    "critical": false,
+    "description": "Check college bag, notes, phone, ID card. Put on shoes."
+  },
+  {
+    "id": "leave_bus_stop",
+    "title": "Move to Bus Stop",
+    "start": "07:20",
+    "end": "07:28",
+    "type": "transit",
+    "critical": true,
+    "description": "Leave home NOW and walk to the bus stop. Do not delay!"
+  },
+  {
+    "id": "catch_bus",
+    "title": "Catch the Bus",
+    "start": "07:28",
+    "end": "08:45",
+    "type": "transit",
+    "critical": true,
+    "description": "Board the bus! Estimated campus arrival at 8:45 AM."
+  },
+  {
+    "id": "campus_arrival",
+    "title": "Reach College Campus",
+    "start": "08:45",
+    "end": "09:00",
+    "type": "routine",
+    "critical": false,
+    "description": "Arrive at campus, reach your classroom, prepare notebooks."
+  },
+  {
+    "id": "morning_classes",
+    "title": "Morning Classes",
+    "start": "09:00",
+    "end": "13:20",
+    "type": "college",
+    "critical": false,
+    "description": "Morning academic blocks. Stay attentive and take key notes."
+  },
+  {
+    "id": "post_class_break",
+    "title": "Post-Class Break & Phone Time",
+    "start": "13:20",
+    "end": "13:45",
+    "type": "break",
+    "critical": false,
+    "description": "Relax, check messages, eat lunch/snack, recharge."
+  },
+  {
+    "id": "afternoon_classes",
+    "title": "Afternoon Classes & Labs",
+    "start": "13:45",
+    "end": "17:30",
+    "type": "college",
+    "critical": false,
+    "description": "Afternoon lecture/lab sessions. Wrap up assignments."
+  },
+  {
+    "id": "transit_home",
+    "title": "Transit Back Home",
+    "start": "17:30",
+    "end": "18:30",
+    "type": "transit",
+    "critical": false,
+    "description": "Commute back home. Wind down from the college day."
+  },
+  {
+    "id": "unwind_home",
+    "title": "Arrive Home & Relaxation",
+    "start": "18:30",
+    "end": "19:00",
+    "type": "break",
+    "critical": false,
+    "description": "Wash up, have evening tea/water, relax before study session."
+  },
+  {
+    "id": "study_session_1",
+    "title": "Evening Study Session 1",
+    "start": "19:00",
+    "end": "20:00",
+    "type": "study",
+    "critical": true,
+    "description": "Active study block: Concept review, homework, or quick quizzes."
+  },
+  {
+    "id": "dinner_break",
+    "title": "Dinner Break",
+    "start": "20:10",
+    "end": "20:40",
+    "type": "break",
+    "critical": false,
+    "description": "Family dinner and relaxation. No screen stress."
+  },
+  {
+    "id": "pre_study_downtime",
+    "title": "Downtime & Night Study Prep",
+    "start": "20:40",
+    "end": "21:30",
+    "type": "routine",
+    "critical": false,
+    "description": "Review daily accomplishments, prep desk, set water bottle."
+  },
+  {
+    "id": "study_session_2",
+    "title": "Night Deep Work Session",
+    "start": "21:30",
+    "end": "24:00",
+    "type": "study",
+    "critical": true,
+    "description": "Deep focus block: Coding, AIML, calculus, problem sets."
+  }
+]
+
+
+@echo off
+title Appu - Darshan's Daily Assistant
+color 0b
+
+set NODE_PATH="C:\Users\LT-DARSHAN\AppData\Roaming\Antigravity\bin\agy-node.cmd"
+if not exist %NODE_PATH% (
+    set NODE_PATH=node
+)
+
+:MENU
+cls
+echo ======================================================
+echo           ELEPHANT APPU: DARSHAN'S DAILY AI AGENT
+echo ======================================================
+echo.
+echo [1] Check Immediate Daily Status and Next Event
+echo [2] Start Live Real-Time Watcher (Audio Alerts at 7:20 / 7:28 AM)
+echo [3] Launch Appu Live Web Dashboard in Browser
+echo [4] Start Study Coaching Session
+echo [5] Active Recall Quiz Mode (AIML, DSA, Math)
+echo [6] Exit
+echo.
+set /p choice="Select an option [1-6]: "
+
+if "%choice%"=="1" goto STATUS
+if "%choice%"=="2" goto WATCH
+if "%choice%"=="3" goto SERVE
+if "%choice%"=="4" goto STUDY
+if "%choice%"=="5" goto QUIZ
+if "%choice%"=="6" goto EXIT
+
+echo Invalid selection. Please try again.
+pause
+goto MENU
+
+:STATUS
+cls
+%NODE_PATH% "%~dp0appu.js" status
+pause
+goto MENU
+
+:WATCH
+cls
+%NODE_PATH% "%~dp0appu.js" watch
+pause
+goto MENU
+
+:SERVE
+cls
+start "" http://localhost:3333
+%NODE_PATH% "%~dp0appu.js" serve 3333
+pause
+goto MENU
+
+:STUDY
+cls
+set /p topic="Enter study topic (e.g. AIML, DSA, Calculus): "
+%NODE_PATH% "%~dp0appu.js" study "%topic%"
+pause
+goto MENU
+
+:QUIZ
+cls
+%NODE_PATH% "%~dp0appu.js" quiz
+pause
+goto MENU
+
+:EXIT
+exit
+
